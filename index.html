@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPI Literasi dan Etika Kecerdasan Artifisial - SMKN 1 Jabon</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' },
+                        accent: { 500: '#10b981', 600: '#059669' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- HEADER -->
+    <header class="bg-gradient-to-r from-indigo-700 via-indigo-600 to-blue-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-md border border-white/20 text-2xl">
+                    🤖
+                </div>
+                <div>
+                    <span class="text-xs uppercase tracking-wider bg-indigo-500/50 px-2.5 py-0.5 rounded-full font-semibold border border-indigo-300/30">SMKN 1 Jabon</span>
+                    <h1 class="text-lg md:text-xl font-bold tracking-tight mt-0.5">MPI Literasi & Etika Kecerdasan Artifisial</h1>
+                    <p class="text-xs text-indigo-100 opacity-90">Koding dan Kecerdasan Artifisial • Kelas X SMK</p>
+                </div>
+            </div>
+
+            <!-- Identitas Form Singkat di Header -->
+            <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20 flex flex-wrap items-center gap-2 text-xs w-full md:w-auto">
+                <div class="flex items-center gap-1">
+                    <span class="font-medium">👤</span>
+                    <input type="text" id="globalName" placeholder="Nama Lengkap" class="bg-white/20 text-white placeholder-indigo-200 px-2.5 py-1 rounded-lg border border-white/30 focus:outline-none focus:ring-2 focus:ring-white w-32 md:w-40" oninput="syncIdentity()">
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="font-medium">🏫</span>
+                    <input type="text" id="globalClass" placeholder="Kelas" class="bg-white/20 text-white placeholder-indigo-200 px-2 py-1 rounded-lg border border-white/30 focus:outline-none focus:ring-2 focus:ring-white w-20" oninput="syncIdentity()">
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="font-medium">🔢</span>
+                    <input type="number" id="globalAbsen" placeholder="No" class="bg-white/20 text-white placeholder-indigo-200 px-2 py-1 rounded-lg border border-white/30 focus:outline-none focus:ring-2 focus:ring-white w-14" oninput="syncIdentity()">
+                </div>
+                <button onclick="saveGlobalIdentity()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded-lg font-semibold transition shadow-sm">Simpan</button>
+            </div>
+        </div>
+
+        <!-- PROGRESS BAR -->
+        <div class="bg-indigo-900/40 px-4 py-2 border-t border-indigo-500/30">
+            <div class="max-w-7xl mx-auto flex items-center justify-between text-xs font-medium">
+                <span id="progressText" class="flex items-center gap-1.5">📊 Progres Tugas Selesai: 0 / 16 (0%)</span>
+                <div class="w-48 md:w-64 bg-indigo-950/60 rounded-full h-2.5 overflow-hidden border border-indigo-500/30">
+                    <div id="progressBar" class="bg-emerald-400 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION TABS -->
+    <nav class="bg-white shadow-sm border-b border-slate-200 sticky top-[73px] md:top-[81px] z-40 overflow-x-auto">
+        <div class="max-w-7xl mx-auto px-4 flex space-x-1 py-2.5 min-w-max">
+            <button onclick="switchTab('beranda')" id="tab-beranda" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold transition bg-indigo-600 text-white shadow-sm">🏠 Beranda</button>
+            <button onclick="switchTab('materi-a')" id="tab-materi-a" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold transition text-slate-600 hover:bg-slate-100">📖 Materi A: Citra & Suara</button>
+            <button onclick="switchTab('materi-b')" id="tab-materi-b" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold transition text-slate-600 hover:bg-slate-100">💼 Materi B: Profesi KA</button>
+            <button onclick="switchTab('materi-c')" id="tab-materi-c" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold transition text-slate-600 hover:bg-slate-100">⚖️ Materi C: Dampak KA</button>
+            <button onclick="switchTab('materi-d')" id="tab-materi-d" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold transition text-slate-600 hover:bg-slate-100">📜 Materi D: Regulasi & Etika</button>
+            <button onclick="switchTab('uji-kompetensi')" id="tab-uji-kompetensi" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold transition text-slate-600 hover:bg-slate-100">📝 Uji Kompetensi</button>
+            <button onclick="switchTab('pengayaan')" id="tab-pengayaan" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold transition text-slate-600 hover:bg-slate-100">🚀 Pengayaan</button>
+            <button onclick="switchTab('refleksi')" id="tab-refleksi" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold transition text-slate-600 hover:bg-slate-100">💭 Refleksi</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-5xl mx-auto px-4 py-8 flex-grow w-full">
+
+        <!-- ==================== BERANDA ==================== -->
+        <section id="content-beranda" class="tab-content active space-y-8 animate-fade">
+            <!-- Hero Card -->
+            <div class="bg-gradient-to-br from-indigo-500 via-blue-600 to-indigo-700 text-white rounded-3xl p-6 md:p-10 shadow-xl relative overflow-hidden">
+                <div class="absolute right-0 top-0 translate-x-8 -translate-y-8 text-9xl opacity-10 select-none">🤖</div>
+                <div class="relative z-10 max-w-2xl">
+                    <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase">Bab 3 • Kemendikdasmen 2025</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold mt-3 tracking-tight">Literasi dan Etika Kecerdasan Artifisial</h2>
+                    <p class="mt-3 text-indigo-100 text-sm md:text-base leading-relaxed">
+                        Halo teman-teman SMK! Selamat datang di media pembelajaran interaktif. Di sini kita akan menjelajahi bagaimana komputer melihat dunia (citra & suara), profesi keren di masa depan, dampak positif-negatifnya, hingga aturan dan etika dalam menggunakan kecerdasan artifisial secara bijak! ✨
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <button onclick="switchTab('materi-a')" class="bg-white text-indigo-700 hover:bg-indigo-50 px-6 py-2.5 rounded-xl font-bold text-sm shadow transition flex items-center gap-2">
+                            🚀 Mulai Belajar Sekarang
+                        </button>
+                        <button onclick="downloadAllCSV()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow transition flex items-center gap-2">
+                            📥 Download Semua Tugas (1 CSV)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tahukah Kamu? Callout -->
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-5 rounded-2xl shadow-sm flex items-start gap-4">
+                <div class="text-3xl">💡</div>
+                <div>
+                    <h3 class="font-bold text-amber-900">Tahukah Kamu?</h3>
+                    <p class="text-sm text-amber-800 mt-1 leading-relaxed">
+                        Apakah kamu pernah berinteraksi dengan teknologi yang terasa "pintar", bisa "berpikir", bahkan bisa "mendengar" seperti asisten virtual di ponselmu, rekomendasi film di platform streaming, atau fitur pengenalan wajah di media sosial? Di balik semua itu ada konsep <i>Artificial Intelligence</i> (Kecerdasan Artifisial) yang dipelajari di bab ini!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tujuan Pembelajaran & Kata Kunci -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+                        🎯 Tujuan Pembelajaran
+                    </h3>
+                    <ul class="mt-4 space-y-3 text-sm text-slate-700">
+                        <li class="flex items-start gap-2.5">
+                            <span class="bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-md text-xs shrink-0">1</span>
+                            Memahami cara pengenalan pola citra dan suara oleh kecerdasan artifisial.
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-md text-xs shrink-0">2</span>
+                            Mengenali profesi di bidang kecerdasan artifisial.
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-md text-xs shrink-0">3</span>
+                            Memahami konsekuensi dari pemanfaatan kecerdasan artifisial.
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-md text-xs shrink-0">4</span>
+                            Memahami regulasi serta etika yang berhubungan dengan penggunaan kecerdasan artifisial.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+                        🔑 Kata Kunci
+                    </h3>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-xl text-xs font-semibold border border-slate-200">Literasi Kecerdasan Artifisial</span>
+                        <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-xl text-xs font-semibold border border-slate-200">Pengenalan Pola Citra & Suara</span>
+                        <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-xl text-xs font-semibold border border-slate-200">Profesi KA (Data Scientist, dll)</span>
+                        <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-xl text-xs font-semibold border border-slate-200">Dampak Positif & Negatif KA</span>
+                        <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-xl text-xs font-semibold border border-slate-200">Regulasi & Etika (UNESCO, Kominfo)</span>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-indigo-900 mt-6 flex items-center gap-2">
+                        🗺️ Peta Materi Bab 3
+                    </h3>
+                    <div class="mt-3 grid grid-cols-2 gap-2 text-xs font-semibold text-center">
+                        <div class="bg-indigo-50 text-indigo-700 p-3 rounded-xl border border-indigo-200">A. Citra & Suara</div>
+                        <div class="bg-blue-50 text-blue-700 p-3 rounded-xl border border-blue-200">B. Profesi di Bidang KA</div>
+                        <div class="bg-emerald-50 text-emerald-700 p-3 rounded-xl border border-emerald-200">C. Dampak Pemanfaatan</div>
+                        <div class="bg-amber-50 text-amber-700 p-3 rounded-xl border border-amber-200">D. Regulasi & Etika</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formatif Awal Card -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Kuis Awal</span>
+                        <h3 class="text-xl font-bold text-slate-900 mt-2">Formatif Awal (Pengetahuan Dasar)</h3>
+                    </div>
+                    <span class="text-2xl">🧠</span>
+                </div>
+                <p class="text-sm text-slate-600 mb-6">Sebelum masuk materi, yuk uji pemahaman awalmu seputar Kecerdasan Artifisial!</p>
+                
+                <div class="space-y-6" id="formativeQuizContainer">
+                    <!-- Q1 -->
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <p class="font-semibold text-sm text-slate-800">1. Contoh berikut merupakan penerapan kecerdasan artifisial dalam kehidupan sehari-hari, kecuali ....</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="fq1" value="a"> a. kamera ponsel yang dapat mendeteksi wajah</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="fq1" value="b"> b. robot penyapu debu yang bergerak otomatis</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="fq1" value="c"> c. kalkulator dalam ponsel pintar yang digunakan untuk menghitung</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="fq1" value="d"> d. chatbot yang menjawab pertanyaan pelanggan secara otomatis</label>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <p class="font-semibold text-sm text-slate-800">2. Mengapa konten di media sosial terasa sangat pas dengan minatmu?</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="fq2" value="a"> a. Sistem menyimpan data tanpa diproses</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="fq2" value="b"> b. Kontennya dipilih langsung oleh pengguna lain</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="fq2" value="c"> c. KA mengenali pola preferensi pengguna berdasarkan data aktivitas</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="fq2" value="d"> d. Konten muncul secara acak tanpa aturan</label>
+                        </div>
+                    </div>
+
+                    <!-- Essay 1 -->
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <p class="font-semibold text-sm text-slate-800">3. Bagaimana seharusnya seorang peserta didik menggunakan ChatGPT atau Gemini dalam belajar agar tetap etis dan tidak ketergantungan?</p>
+                        <textarea id="fq_essay1" rows="3" class="w-full mt-2 p-3 text-sm bg-white rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Tuliskan pendapat pribadimu di sini..."></textarea>
+                    </div>
+
+                    <button onclick="submitFormativeAwal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm shadow transition">
+                        ✅ Simpan Jawaban Formatif Awal
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== MATERI A ==================== -->
+        <section id="content-materi-a" class="tab-content space-y-8 animate-fade">
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <span class="text-3xl">👁️</span>
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase">Materi A</span>
+                        <h2 class="text-2xl font-bold text-slate-900">Pengenalan Pola Citra dan Suara</h2>
+                    </div>
+                </div>
+
+                <div class="mt-6 space-y-4 text-slate-700 text-sm md:text-base leading-relaxed">
+                    <p>
+                        Pernahkah kamu mendengar potongan lagu selama 3 detik di video pendek media sosial dan langsung tahu judulnya? Otakmu mengenali pola suara dan nada. Konsep <i>pattern recognition</i> (pengenalan pola) pada Kecerdasan Artifisial bekerja mirip dengan otak manusia, di mana komputer dilatih untuk mengenali objek dan suara dari data. Ibaratnya, KA memiliki <b>"mata dan telinga"</b> digital!
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-4 my-6">
+                        <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
+                            <h4 class="font-bold text-indigo-900 mb-2">📸 Pengenalan Pola Citra (Image Recognition)</h4>
+                            <p class="text-xs text-slate-600 leading-normal">
+                                Menganalisis informasi visual (bentuk, warna, tekstur, kontur) untuk mendeteksi wajah, klasifikasi gambar (kucing/anjing), rontgen medis, hingga OCR (membaca tulisan tangan).
+                            </p>
+                        </div>
+                        <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                            <h4 class="font-bold text-blue-900 mb-2">🎵 Pengenalan Pola Suara (Speech Recognition)</h4>
+                            <p class="text-xs text-slate-600 leading-normal">
+                                Menganalisis pola akustik (frekuensi, tempo, pitch, timbre) untuk transkripsi suara ke teks, asisten virtual (Siri, Google Assistant), deteksi emosi suara, hingga kontrol perangkat.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TUGAS LEKA-K10-01 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-01</span>
+                        <span class="text-xs text-slate-500 font-semibold">Tebak Kategori</span>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-lg">Tebak Kategori Gambar & Pola</h4>
+                    <p class="text-xs text-slate-600 mt-1">Perhatikan 4 sampel gambar (emoji) di bawah ini, pilih kategorinya, dan tulis pola visual yang kamu amati!</p>
+
+                    <!-- Interactive Image Classification Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4" id="imgTaskGrid">
+                        <div class="bg-white p-4 rounded-xl border text-center">
+                            <div class="text-4xl mb-2">🐯</div>
+                            <p class="text-xs font-bold mb-1">Objek #1</p>
+                            <select id="t1_cat1" class="text-xs p-1.5 rounded border w-full mb-2">
+                                <option value="">Pilih Kategori...</option>
+                                <option value="Hewan">Hewan</option>
+                                <option value="Buah">Buah</option>
+                                <option value="Bentuk">Bentuk</option>
+                            </select>
+                            <input type="text" id="t1_pat1" placeholder="Pola (mis: warna oranye, garis hitam)" class="text-xs p-1.5 rounded border w-full">
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border text-center">
+                            <div class="text-4xl mb-2">🍎</div>
+                            <p class="text-xs font-bold mb-1">Objek #2</p>
+                            <select id="t1_cat2" class="text-xs p-1.5 rounded border w-full mb-2">
+                                <option value="">Pilih Kategori...</option>
+                                <option value="Hewan">Hewan</option>
+                                <option value="Buah">Buah</option>
+                                <option value="Bentuk">Bentuk</option>
+                            </select>
+                            <input type="text" id="t1_pat2" placeholder="Pola (mis: bentuk bulat, warna merah)" class="text-xs p-1.5 rounded border w-full">
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border text-center">
+                            <div class="text-4xl mb-2">⭐</div>
+                            <p class="text-xs font-bold mb-1">Objek #3</p>
+                            <select id="t1_cat3" class="text-xs p-1.5 rounded border w-full mb-2">
+                                <option value="">Pilih Kategori...</option>
+                                <option value="Hewan">Hewan</option>
+                                <option value="Buah">Buah</option>
+                                <option value="Bentuk">Bentuk</option>
+                            </select>
+                            <input type="text" id="t1_pat3" placeholder="Pola (mis: sudut lancip, simetris)" class="text-xs p-1.5 rounded border w-full">
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border text-center">
+                            <div class="text-4xl mb-2">🍌</div>
+                            <p class="text-xs font-bold mb-1">Objek #4</p>
+                            <select id="t1_cat4" class="text-xs p-1.5 rounded border w-full mb-2">
+                                <option value="">Pilih Kategori...</option>
+                                <option value="Hewan">Hewan</option>
+                                <option value="Buah">Buah</option>
+                                <option value="Bentuk">Bentuk</option>
+                            </select>
+                            <input type="text" id="t1_pat4" placeholder="Pola (mis: melengkung, warna kuning)" class="text-xs p-1.5 rounded border w-full">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-01', 'Tebak Kategori')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-01', 'Tebak Kategori')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- TUGAS LEKA-K10-02 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-02</span>
+                        <a href="https://quickdraw.withgoogle.com/" target="_blank" class="text-xs text-indigo-600 font-bold hover:underline">🔗 Buka Quick Draw Google</a>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-lg">Main Quick Draw & Refleksi Data</h4>
+                    <p class="text-xs text-slate-600 mt-1">Buka tautan Quick Draw di atas, mainkan 2-3 putaran, lalu jawab pertanyaan berikut:</p>
+                    
+                    <div class="mt-4 space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">a. Mengapa ada gambar yang dapat dikenali atau tidak dikenali oleh komputer?</label>
+                            <textarea id="t2_q1" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">b. Pola visual apa yang membingungkan bagi sistem KA?</label>
+                            <textarea id="t2_q2" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">c. Mengapa komputer dapat menebak gambar sederhana dan apa yang membuat KA semakin pintar?</label>
+                            <textarea id="t2_q3" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">d. Menurutmu, mengapa data sangat penting bagi pelatihan KA?</label>
+                            <textarea id="t2_q4" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-02', 'Main Quick Draw')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-02', 'Main Quick Draw')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- TUGAS LEKA-K10-03 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-03</span>
+                        <span class="text-xs text-slate-500 font-semibold">Coba Suara ke Teks (Speech Recognition)</span>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-lg">Simulasi Web Speech API</h4>
+                    <p class="text-xs text-slate-600 mt-1">Uji mikrofon browsermu untuk mengubah suara menjadi teks bahasa Indonesia!</p>
+                    
+                    <div class="mt-4 bg-white p-4 rounded-xl border flex flex-col items-center gap-3">
+                        <button onclick="startSpeechDemo()" id="micBtn" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow flex items-center gap-2">
+                            🎙️ Mulai Rekam Suara (MIC ON)
+                        </button>
+                        <div id="speechResult" class="w-full bg-slate-100 p-3 rounded-lg text-xs text-slate-700 min-h-[50px] flex items-center justify-center border">
+                            Hasil ucapan akan muncul di sini... (Ucapkan: "Halo nama saya ...")
+                        </div>
+                    </div>
+
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">Catat hasil transkripsi dan jelaskan mengapa terkadang muncul beberapa alternatif hasil atau salah ketik:</label>
+                            <textarea id="t3_ans" rows="3" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border" placeholder="Tuliskan analisis pengenalan suaramu..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-03', 'Coba Suara ke Teks')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-03', 'Coba Suara ke Teks')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== MATERI B ==================== -->
+        <section id="content-materi-b" class="tab-content space-y-8 animate-fade">
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <span class="text-3xl">💼</span>
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase">Materi B</span>
+                        <h2 class="text-2xl font-bold text-slate-900">Profesi di Bidang Kecerdasan Artifisial</h2>
+                    </div>
+                </div>
+
+                <div class="mt-6 space-y-4 text-slate-700 text-sm md:text-base leading-relaxed">
+                    <p>
+                        Teknologi KA mengubah dunia kerja dengan cepat. Ada pekerjaan yang hilang, berubah, dan lahir jenis profesi baru. Berikut adalah 5 profesi utama di bidang KA beserta analogi mudahnya:
+                    </p>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                        <div class="bg-slate-50 p-4 rounded-xl border">
+                            <h4 class="font-bold text-indigo-900">1. Data Scientist</h4>
+                            <p class="text-xs text-slate-600 mt-1">Bagaikan <b>arsitek & detektif</b> yang mengumpulkan dan menganalisis data untuk menemukan pola tersembunyi sebagai fondasi sistem KA.</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border">
+                            <h4 class="font-bold text-indigo-900">2. Machine Learning Engineer</h4>
+                            <p class="text-xs text-slate-600 mt-1">Merancang algoritma dan kurikulum "cara belajar" bagi KA (supervised, unsupervised, reinforcement learning).</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border">
+                            <h4 class="font-bold text-indigo-900">3. AI Research Scientist</h4>
+                            <p class="text-xs text-slate-600 mt-1">Ilmuwan yang meneliti dan menciptakan algoritma mutakhir (deep learning, reinforcement learning) agar KA makin pintar.</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border">
+                            <h4 class="font-bold text-indigo-900">4. Robotics Engineer</h4>
+                            <p class="text-xs text-slate-600 mt-1">Menggabungkan mekanika, elektronika, dan "otak" KA agar robot dapat berinteraksi dengan dunia fisik secara mandiri.</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border md:col-span-2 lg:col-span-1">
+                            <h4 class="font-bold text-indigo-900">5. AI Ethics Specialist</h4>
+                            <p class="text-xs text-slate-600 mt-1">Memastikan pengembangan dan penerapan KA berjalan secara etis, adil, transparan, dan melindungi hak asasi manusia.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 mt-6">
+                        <h4 class="font-bold text-indigo-900 mb-1">🛠️ 7 Keterampilan Penting Menghadapi Era KA:</h4>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            1. Dasar Matematika & Logika • 2. Pemrograman • 3. Data & Analisis Data • 4. Machine Learning & Deep Learning • 5. Kreativitas • 6. Problem Solving (Critical Thinking) • 7. Etika & Human-Centered Thinking.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-04 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-04</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">Cerita Om Budi (Evolusi Pekerjaan)</h4>
+                    <p class="text-xs text-slate-600 mt-1">Om Budi bercita-cita jadi dokter, tetapi kini ia sukses menjadi konten kreator kesehatan di media sosial.</p>
+                    
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">1. Apakah pekerjaan konten kreator sudah ada 20 tahun lalu? Mengapa pekerjaan ini bisa muncul?</label>
+                            <textarea id="t4_q1" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">2. Apa saja pekerjaan lain yang muncul karena perkembangan teknologi?</label>
+                            <textarea id="t4_q2" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">3. Pekerjaan apa saja yang kemungkinan besar akan hilang di masa depan?</label>
+                            <textarea id="t4_q3" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-04', 'Cerita Om Budi')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-04', 'Cerita Om Budi')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-05 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-05</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">Jelajah Bidang Penerapan KA</h4>
+                    <p class="text-xs text-slate-600 mt-1">Pilih SATU bidang dan analisis penerapannya:</p>
+                    
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">Pilih Bidang:</label>
+                            <select id="t5_field" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                                <option value="">-- Pilih Bidang --</option>
+                                <option value="Kesehatan">Kesehatan</option>
+                                <option value="Pendidikan">Pendidikan</option>
+                                <option value="Industri & Manufaktur">Industri & Manufaktur</option>
+                                <option value="Transportasi">Transportasi</option>
+                                <option value="Keuangan">Keuangan</option>
+                                <option value="Pertanian">Pertanian</option>
+                                <option value="Ritel & E-commerce">Ritel & E-commerce</option>
+                                <option value="Hukum & Keamanan">Hukum & Keamanan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">a. Contoh penerapan KA pada bidang tersebut:</label>
+                            <textarea id="t5_a" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">b. Manfaat dari penerapan KA:</label>
+                            <textarea id="t5_b" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">c. Tantangan atau risiko yang mungkin muncul:</label>
+                            <textarea id="t5_c" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-05', 'Jelajah Bidang')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-05', 'Jelajah Bidang')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-06 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-06</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">Bangun Rumah ala Data Scientist</h4>
+                    <p class="text-xs text-slate-600 mt-1">Jawab pertanyaan perencanaan rumah dan hubungkan dengan tahapan kerja seorang data scientist.</p>
+                    
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">a. Siapa saja yang akan tinggal di rumah itu? (Kenali Pengguna)</label>
+                            <input type="text" id="t6_q1" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">b. Apa detail lokasi dan kondisi tanah? (Periksa Kualitas Data)</label>
+                            <input type="text" id="t6_q2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">c. Ruang apa saja yang dibutuhkan? (Pilih Fitur Penting)</label>
+                            <input type="text" id="t6_q3" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">d. Berapa anggaran untuk bahan bangunan? (Nilai Sumber Daya)</label>
+                            <input type="text" id="t6_q4" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">e. Adakah aturan bangunan yang harus diikuti? (Perhatikan Etika/Aturan)</label>
+                            <input type="text" id="t6_q5" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-06', 'Bangun Rumah Data Scientist')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-06', 'Bangun Rumah Data Scientist')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-07 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-07</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">Kasus Etika & Peran Profesi KA</h4>
+                    <p class="text-xs text-slate-600 mt-1">Pilih SATU kasus dari pilihan di bawah dan analisis profesi yang paling berperan beserta alasannya:</p>
+                    
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">Pilih Kasus:</label>
+                            <select id="t7_case" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                                <option value="">-- Pilih Kasus --</option>
+                                <option value="Robot Pengantar Makanan">a. Perusahaan ingin membuat robot pengantar makanan yang dapat menghindari rintangan.</option>
+                                <option value="Rekomendasi Materi Sekolah">b. Sekolah ingin sistem KA yang merekomendasikan materi belajar sesuai kemampuan peserta didik.</option>
+                                <option value="Rekrutmen Kerja Adil">c. Pemerintah ingin memastikan KA untuk rekrutmen kerja adil dan tidak diskriminatif.</option>
+                                <option value="Gim Reinforcement Learning">d. Perusahaan gim ingin membuat KA yang dapat belajar strategi bermain lewat coba-coba.</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">a. Profesi mana yang paling berperan penting?</label>
+                            <input type="text" id="t7_prof" placeholder="mis: Robotics Engineer / AI Ethics Specialist" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">b. Berikan alasan pilihan profesi tersebut:</label>
+                            <textarea id="t7_reason" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-07', 'Kasus Etika KA')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-07', 'Kasus Etika KA')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-08 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-08</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">Pilih Profesi Impianku di Bidang KA</h4>
+                    
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">Pilih Salah Satu Profesi Impianmu:</label>
+                            <select id="t8_prof" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                                <option value="">-- Pilih Profesi --</option>
+                                <option value="Data Scientist">Data Scientist</option>
+                                <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+                                <option value="AI Research Scientist">AI Research Scientist</option>
+                                <option value="Robotics Engineer">Robotics Engineer</option>
+                                <option value="AI Ethics Specialist">AI Ethics Specialist</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">a. Jelaskan tugas utama profesi tersebut:</label>
+                            <textarea id="t8_desc" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">b. Keterampilan apa saja yang harus kamu kuasai untuk profesi ini?</label>
+                            <textarea id="t8_skills" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">c. Mengapa kamu tertarik memilih profesi ini?</label>
+                            <textarea id="t8_why" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-08', 'Pilih Profesi Impianku')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-08', 'Pilih Profesi Impianku')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== MATERI C ==================== -->
+        <section id="content-materi-c" class="tab-content space-y-8 animate-fade">
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <span class="text-3xl">⚖️</span>
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase">Materi C</span>
+                        <h2 class="text-2xl font-bold text-slate-900">Dampak Pemanfaatan Kecerdasan Artifisial</h2>
+                    </div>
+                </div>
+
+                <div class="mt-6 space-y-4 text-slate-700 text-sm md:text-base leading-relaxed">
+                    <p>
+                        Sama seperti pisau bermata dua, teknologi KA membawa dampak positif yang luar biasa sekaligus dampak negatif yang harus diwaspadai dengan bijak.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+                            <h4 class="font-bold text-emerald-900 mb-2">✨ Dampak Positif KA</h4>
+                            <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                                <li><b>Produktivitas & Efisiensi:</b> Otomatisasi tugas rutin, optimalisasi proses, analisis data kilat.</li>
+                                <li><b>Inovasi Berbagai Bidang:</b> Kesehatan (analisis MRI), pendidikan adaptif, transportasi pintar, keamanan siber, dan energi.</li>
+                                <li><b>Personalisasi Layanan:</b> Rekomendasi belanja, media sosial, hingga alat bantu disabilitas.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-rose-50 p-5 rounded-xl border border-rose-200">
+                            <h4 class="font-bold text-rose-900 mb-2">⚠️ Dampak Negatif KA</h4>
+                            <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                                <li>Ancaman lapangan pekerjaan & kesenjangan ekonomi.</li>
+                                <li>Ketergantungan berlebihan & risiko keamanan data pribadi.</li>
+                                <li>Bias dan diskriminasi algoritma, hilangnya interaksi sosial.</li>
+                                <li>Kurangnya akuntabilitas & ancaman militer otonom.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-09 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-09</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">2 Aktivitas Lebih Cepat dengan KA</h4>
+                    <p class="text-xs text-slate-600 mt-1">Berikan dua contoh kegiatan sehari-hari yang lebih cepat jika dibantu KA beserta alasannya.</p>
+                    
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">Contoh Kegiatan #1 & Alasannya:</label>
+                            <textarea id="t9_q1" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">Contoh Kegiatan #2 & Alasannya:</label>
+                            <textarea id="t9_q2" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-09', '2 Aktivitas Cepat dengan KA')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-09', '2 Aktivitas Cepat dengan KA')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-10 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-10</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">KA di Kehidupanku</h4>
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">Pilih Bidang:</label>
+                            <select id="t10_field" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                                <option value="Kesehatan">Kesehatan</option>
+                                <option value="Pendidikan">Pendidikan</option>
+                                <option value="Transportasi">Transportasi</option>
+                                <option value="Keamanan Siber">Keamanan Siber</option>
+                                <option value="Energi">Energi</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">Tuliskan contoh penggunaan KA dalam membantu kehidupan sehari-hari pada bidang tersebut:</label>
+                            <textarea id="t10_ans" rows="3" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-10', 'KA di Kehidupanku')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-10', 'KA di Kehidupanku')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-11 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-11</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">Aplikasi yang Mengerti Aku (Personalisasi)</h4>
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">1. Sebutkan satu aplikasi yang sering kamu pakai yang terasa "mengerti" kebiasaanmu:</label>
+                            <input type="text" id="t11_app" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">2. Keuntungan personalisasi apa yang kamu rasakan?</label>
+                            <textarea id="t11_benefit" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">3. Apakah kamu pernah merasa tidak nyaman dengan fitur personalisasi tersebut? Mengapa?</label>
+                            <textarea id="t11_uncomfort" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-11', 'Aplikasi yang Mengerti Aku')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-11', 'Aplikasi yang Mengerti Aku')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-12 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-12</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">Masa Depan Pekerjaan & Keadilan KA</h4>
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">1. Daftar 3 pekerjaan yang tetap butuh sentuhan manusia meskipun ada KA:</label>
+                            <textarea id="t12_jobs" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">2. Bagaimana caranya agar manfaat KA dapat dirasakan lebih merata?</label>
+                            <textarea id="t12_fair" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">3. Buat 2 tips sederhana agar data pribadi lebih aman di internet:</label>
+                            <textarea id="t12_tips" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-12', 'Masa Depan Pekerjaan')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-12', 'Masa Depan Pekerjaan')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== MATERI D ==================== -->
+        <section id="content-materi-d" class="tab-content space-y-8 animate-fade">
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <span class="text-3xl">📜</span>
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase">Materi D</span>
+                        <h2 class="text-2xl font-bold text-slate-900">Regulasi dan Etika Kecerdasan Artifisial</h2>
+                    </div>
+                </div>
+
+                <div class="mt-6 space-y-4 text-slate-700 text-sm md:text-base leading-relaxed">
+                    <p>
+                        Agar teknologi KA tidak disalahgunakan, dunia internasional (seperti kerangka kerja UNESCO 2024, EU AI Act) dan pemerintah Indonesia (Surat Edaran Kominfo No. 9 Tahun 2023) menetapkan aturan dan prinsip etika:
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-200">
+                            <h4 class="font-bold text-indigo-900 mb-2">🌐 Prinsip Etika Utama KA</h4>
+                            <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                                <li><b>Inklusivitas & Aksesibilitas:</b> Dapat dinikmati semua kalangan.</li>
+                                <li><b>Keamanan & Privasi:</b> Melindungi data pribadi (ibarat kunci rumah).</li>
+                                <li><b>Kemanusiaan:</b> Keputusan vital tetap di tangan manusia (agen manusia).</li>
+                                <li><b>Kredibilitas & Akuntabilitas:</b> Konten buatan KA harus diberi tanda jelas, pihak pengembang/pengguna siap bertanggung jawab.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 p-5 rounded-xl border border-blue-200">
+                            <h4 class="font-bold text-blue-900 mb-2">⚠️ Isu Hangat: Deepfake & Hak Cipta</h4>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                Penggunaan <i>deepfake</i> (memalsukan wajah/suara artis untuk iklan tanpa izin) melanggar hak cipta dan etika. Regulasi hadir untuk mencegah penipuan, hoaks, dan eksploitasi digital.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-13 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-13</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">Kasus Iklan Artis Buatan KA (Deepfake)</h4>
+                    <p class="text-xs text-slate-600 mt-1">Perusahaan minuman menggunakan KA untuk membuat gambar artis terkenal meminum produk mereka tanpa izin artis tersebut.</p>
+                    
+                    <div class="mt-4 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">1. Menurutmu, etiskah tindakan perusahaan tersebut? Mengapa?</label>
+                            <textarea id="t13_q1" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">2. Apa dampak positif dan negatif dari kasus ini?</label>
+                            <textarea id="t13_q2" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">3. Jika kamu adalah artis tersebut, apa yang akan kamu lakukan?</label>
+                            <textarea id="t13_q3" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">4. Bagaimana cara agensi periklanan menggunakan KA secara lebih etis?</label>
+                            <textarea id="t13_q4" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-13', 'Kasus Iklan Artis KA')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-13', 'Kasus Iklan Artis KA')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+
+                <!-- LEKA-K10-14 -->
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Aktivitas Mandiri • LEKA-K10-14</span>
+                    <h4 class="font-bold text-slate-900 text-lg mt-2">Kode Etik KA di Sekolah</h4>
+                    <p class="text-xs text-slate-600 mt-1">Tuliskan 5 aturan sederhana penggunaan KA yang aman, jujur, dan bermanfaat di lingkungan sekolah (misal: anti-menyontek, cek kebenaran informasi, tidak asal salin karya KA).</p>
+                    
+                    <div class="mt-4 space-y-2">
+                        <input type="text" id="t14_rule1" placeholder="Aturan 1 (contoh: Selalu verifikasi fakta jawaban AI)" class="w-full p-2 text-xs bg-white rounded-lg border">
+                        <input type="text" id="t14_rule2" placeholder="Aturan 2" class="w-full p-2 text-xs bg-white rounded-lg border">
+                        <input type="text" id="t14_rule3" placeholder="Aturan 3" class="w-full p-2 text-xs bg-white rounded-lg border">
+                        <input type="text" id="t14_rule4" placeholder="Aturan 4" class="w-full p-2 text-xs bg-white rounded-lg border">
+                        <input type="text" id="t14_rule5" placeholder="Aturan 5" class="w-full p-2 text-xs bg-white rounded-lg border">
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="saveTask('LEKA-K10-14', 'Kode Etik KA Sekolah')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Jawaban</button>
+                        <button onclick="downloadCSV('LEKA-K10-14', 'Kode Etik KA Sekolah')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== UJI KOMPETENSI ==================== -->
+        <section id="content-uji-kompetensi" class="tab-content space-y-8 animate-fade">
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase">Evaluasi Akhir Bab</span>
+                        <h2 class="text-2xl font-bold text-slate-900">Uji Kompetensi (10 Soal Pilihan Ganda)</h2>
+                    </div>
+                    <span class="text-3xl">📝</span>
+                </div>
+
+                <div class="mt-6 space-y-8" id="quizContainer">
+                    <!-- Soal 1 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 quiz-card" data-qid="1" data-key="c">
+                        <p class="font-bold text-sm text-slate-900">1. Kemampuan sistem cerdas untuk mengidentifikasi dan mengklasifikasikan objek atau suara berdasarkan pola sebelumnya disebut...</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="block"><input type="radio" name="q1" value="a"> a. Data mining</label>
+                            <label class="block"><input type="radio" name="q1" value="b"> b. Cloud computing</label>
+                            <label class="block"><input type="radio" name="q1" value="c"> c. Pattern recognition (pengenalan pola)</label>
+                            <label class="block"><input type="radio" name="q1" value="d"> d. Encryption</label>
+                        </div>
+                        <div class="quiz-feedback hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+
+                    <!-- Soal 2 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 quiz-card" data-qid="2" data-key="b">
+                        <p class="font-bold text-sm text-slate-900">2. Komponen utama yang menjadi "bahan bakar" atau fondasi penting bagi proses pembelajaran machine learning adalah...</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="block"><input type="radio" name="q2" value="a"> a. Perangkat keras mahal</label>
+                            <label class="block"><input type="radio" name="q2" value="b"> b. Data</label>
+                            <label class="block"><input type="radio" name="q2" value="c"> c. Jaringan internet 5G</label>
+                            <label class="block"><input type="radio" name="q2" value="d"> d. Kabel fiber optik</label>
+                        </div>
+                        <div class="quiz-feedback hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+
+                    <!-- Soal 3 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 quiz-card" data-qid="3" data-key="a">
+                        <p class="font-bold text-sm text-slate-900">3. Profesi yang bertugas mengumpulkan, menganalisis data, dan dianalogikan sebagai arsitek serta detektif dalam KA adalah...</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="block"><input type="radio" name="q3" value="a"> a. Data scientist</label>
+                            <label class="block"><input type="radio" name="q3" value="b"> b. Robotics engineer</label>
+                            <label class="block"><input type="radio" name="q3" value="c"> c. AI ethics specialist</label>
+                            <label class="block"><input type="radio" name="q3" value="d"> d. Network administrator</label>
+                        </div>
+                        <div class="quiz-feedback hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+
+                    <!-- Soal 4 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 quiz-card" data-qid="4" data-key="d">
+                        <p class="font-bold text-sm text-slate-900">4. Metode belajar KA di mana sistem mencoba berbagai tindakan dan diberi "hadiah" (reward) atau "hukuman" (penalty) disebut...</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="block"><input type="radio" name="q4" value="a"> a. Supervised learning</label>
+                            <label class="block"><input type="radio" name="q4" value="b"> b. Unsupervised learning</label>
+                            <label class="block"><input type="radio" name="q4" value="c"> c. Deep learning</label>
+                            <label class="block"><input type="radio" name="q4" value="d"> d. Reinforcement learning</label>
+                        </div>
+                        <div class="quiz-feedback hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+
+                    <!-- Soal 5 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 quiz-card" data-qid="5" data-key="c">
+                        <p class="font-bold text-sm text-slate-900">5. Peran utama seorang AI Ethics Specialist adalah...</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="block"><input type="radio" name="q5" value="a"> a. Merancang robot fisik berkecepatan tinggi</label>
+                            <label class="block"><input type="radio" name="q5" value="b"> b. Menulis kode pemrograman tingkat rendah</label>
+                            <label class="block"><input type="radio" name="q5" value="c"> c. Memastikan pengembangan dan penerapan KA berjalan secara etis, adil, dan bertanggung jawab</label>
+                            <label class="block"><input type="radio" name="q5" value="d"> d. Menjual produk perangkat lunak KA</label>
+                        </div>
+                        <div class="quiz-feedback hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+
+                    <!-- Soal 6 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 quiz-card" data-qid="6" data-key="b">
+                        <p class="font-bold text-sm text-slate-900">6. Salah satu dampak negatif dari penggunaan KA yang tidak diimbangi literasi kritis adalah...</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="block"><input type="radio" name="q6" value="a"> a. Meningkatkan kemampuan fisik manusia secara instan</label>
+                            <label class="block"><input type="radio" name="q6" value="b"> b. Ketergantungan berlebihan dan potensi penurunan kemampuan berpikir kritis</label>
+                            <label class="block"><input type="radio" name="q6" value="c"> c. Menghilangkan seluruh masalah sosial di dunia</label>
+                            <label class="block"><input type="radio" name="q6" value="d"> d. Membuat semua orang menjadi programmer handal</label>
+                        </div>
+                        <div class="quiz-feedback hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+
+                    <!-- Soal 7 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 quiz-card" data-qid="7" data-key="a">
+                        <p class="font-bold text-sm text-slate-900">7. Organisasi internasional UNESCO mengeluarkan rekomendasi etika KA tahun 2021 yang menekankan bahwa KA harus berpusat pada...</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="block"><input type="radio" name="q7" value="a"> a. Manusia (Human-centred)</label>
+                            <label class="block"><input type="radio" name="q7" value="b"> b. Keuntungan perusahaan teknologi</label>
+                            <label class="block"><input type="radio" name="q7" value="c"> c. Kecepatan proses komputer semata</label>
+                            <label class="block"><input type="radio" name="q7" value="d"> d. Otonomi penuh mesin tanpa aturan</label>
+                        </div>
+                        <div class="quiz-feedback hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+
+                    <!-- Soal 8 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 quiz-card" data-qid="8" data-key="d">
+                        <p class="font-bold text-sm text-slate-900">8. Kebijakan di Indonesia yang menjadi pedoman etika bagi pelaku industri digital dalam memanfaatkan KA adalah...</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="block"><input type="radio" name="q8" value="a"> a. Undang-Undang Lalu Lintas</label>
+                            <label class="block"><input type="radio" name="q8" value="b"> b. Keputusan Menteri Pertanian</label>
+                            <label class="block"><input type="radio" name="q8" value="c"> c. Peraturan Daerah tentang Kebersihan</label>
+                            <label class="block"><input type="radio" name="q8" value="d"> d. Surat Edaran Menteri Kominfo No. 9 Tahun 2023</label>
+                        </div>
+                        <div class="quiz-feedback hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+
+                    <!-- Soal 9 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 quiz-card" data-qid="9" data-key="b">
+                        <p class="font-bold text-sm text-slate-900">9. Apa yang dimaksud dengan bias algoritmik dalam sistem KA?</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="block"><input type="radio" name="q9" value="a"> a. Komputer mengalami kerusakan perangkat keras</label>
+                            <label class="block"><input type="radio" name="q9" value="b"> b. Keputusan KA yang tidak adil atau diskriminatif akibat data pelatihan yang tidak beragam</label>
+                            <label class="block"><input type="radio" name="q9" value="c"> c. Kecepatan akses internet yang lambat</label>
+                            <label class="block"><input type="radio" name="q9" value="d"> d. Pembuatan program tanpa menggunakan bahasa pemrograman</label>
+                        </div>
+                        <div class="quiz-feedback hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+
+                    <!-- Soal 10 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 quiz-card" data-qid="10" data-key="c">
+                        <p class="font-bold text-sm text-slate-900">10. Mengapa keputusan penting dalam bidang kesehatan atau hukum tidak boleh diserahkan sepenuhnya kepada KA tanpa campur tangan manusia?</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <label class="block"><input type="radio" name="q10" value="a"> a. Karena komputer tidak memiliki aliran listrik</label>
+                            <label class="block"><input type="radio" name="q10" value="b"> b. Karena harga komputer sangat mahal</label>
+                            <label class="block"><input type="radio" name="q10" value="c"> c. Karena manusia harus memegang akuntabilitas dan nilai-nilai kemanusiaan (agent of accountability)</label>
+                            <label class="block"><input type="radio" name="q10" value="d"> d. Karena KA selalu menolak perintah manusia</label>
+                        </div>
+                        <div class="quiz-feedback hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex flex-wrap gap-4">
+                    <button onclick="submitQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl text-sm shadow transition">
+                        🎯 Periksa Hasil Uji Kompetensi
+                    </button>
+                    <button onclick="downloadQuizCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl text-sm shadow transition">
+                        ⬇️ Download CSV Nilai Uji Kompetensi
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PENGAYAAN ==================== -->
+        <section id="content-pengayaan" class="tab-content space-y-8 animate-fade">
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <span class="text-3xl">🚀</span>
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase">Pengayaan Mandiri</span>
+                        <h2 class="text-2xl font-bold text-slate-900">KA Penjaga Kebersihan (Teachable Machine)</h2>
+                    </div>
+                </div>
+
+                <div class="mt-6 space-y-4 text-slate-700 text-sm md:text-base leading-relaxed">
+                    <p>
+                        Proyek ini memberikan pemahaman intuitif tentang bagaimana proses training dan klasifikasi gambar bekerja menggunakan platform <b>Google Teachable Machine</b>.
+                    </p>
+
+                    <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 space-y-3">
+                        <h4 class="font-bold text-indigo-900">📋 Langkah-langkah Proyek:</h4>
+                        <ol class="text-xs text-slate-700 space-y-2 list-decimal list-inside">
+                            <li>Buka platform <a href="https://teachablemachine.withgoogle.com/" target="_blank" class="text-indigo-600 font-bold underline">Google Teachable Machine</a>.</li>
+                            <li>Buat project baru bertipe <b>Image Project</b>.</li>
+                            <li>Bagi data menjadi dua kelas: <b>Kelas 1: Organik</b> (daun, sisa makanan) dan <b>Kelas 2: Anorganik</b> (botol plastik, kertas).</li>
+                            <li>Latih model KA (Train Model) dengan mengunggah atau mengambil sampel foto via webcam.</li>
+                            <li>Uji model secara <i>real-time</i> untuk melihat apakah KA dapat membedakan jenis sampah dengan akurat.</li>
+                        </ol>
+                    </div>
+
+                    <div class="mt-6 space-y-4 bg-slate-50 p-6 rounded-2xl border">
+                        <h4 class="font-bold text-slate-900">📝 Laporan Proyek Pengayaan</h4>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">1. Apa yang kamu lakukan dalam proyek ini?</label>
+                            <textarea id="eng_q1" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">2. Bagaimana hasil pengujian model KA tersebut?</label>
+                            <textarea id="eng_q2" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700">3. Kendala apa yang kamu temui saat melatih model?</label>
+                            <textarea id="eng_q3" rows="2" class="w-full mt-1 p-2 text-xs bg-white rounded-lg border"></textarea>
+                        </div>
+                        
+                        <div class="flex gap-3 pt-2">
+                            <button onclick="saveTask('PENGAYAAN', 'KA Penjaga Kebersihan')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">💾 Simpan Laporan</button>
+                            <button onclick="downloadCSV('PENGAYAAN', 'KA Penjaga Kebersihan')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition">⬇️ Download CSV</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== REFLEKSI ==================== -->
+        <section id="content-refleksi" class="tab-content space-y-8 animate-fade">
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <span class="text-3xl">💭</span>
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase">Evaluasi Diri</span>
+                        <h2 class="text-2xl font-bold text-slate-900">Lembar Refleksi Pembelajaran</h2>
+                    </div>
+                </div>
+
+                <p class="text-sm text-slate-600 mt-4">Renungkan perjalanan belajarmu pada Bab 3 ini dan isi 10 komponen refleksi berikut dengan jujur:</p>
+
+                <div class="mt-6 space-y-4">
+                    <div class="bg-slate-50 p-4 rounded-xl border">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">1. Ide/konsep kunci yang saya pahami setelah mempelajari bab ini:</label>
+                        <textarea id="ref_1" rows="2" class="w-full p-2 text-xs bg-white rounded-lg border"></textarea>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">2. Bukti belajar saya (karya/catatan/percobaan):</label>
+                        <textarea id="ref_2" rows="2" class="w-full p-2 text-xs bg-white rounded-lg border"></textarea>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">3. Hal yang masih membingungkan dan pertanyaan lanjutan:</label>
+                        <textarea id="ref_3" rows="2" class="w-full p-2 text-xs bg-white rounded-lg border"></textarea>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">4. Pola/koneksi yang saya temukan dalam kehidupan sehari-hari:</label>
+                        <textarea id="ref_4" rows="2" class="w-full p-2 text-xs bg-white rounded-lg border"></textarea>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">5. Strategi belajar yang saya gunakan (apa yang sudah efektif/tidak):</label>
+                        <textarea id="ref_5" rows="2" class="w-full p-2 text-xs bg-white rounded-lg border"></textarea>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">6. Kesalahan/miskonsepsi yang saya rasakan sebelumnya dan perbaikannya:</label>
+                        <textarea id="ref_6" rows="2" class="w-full p-2 text-xs bg-white rounded-lg border"></textarea>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">7. Umpan balik dari guru/teman dan tindak lanjut:</label>
+                        <textarea id="ref_7" rows="2" class="w-full p-2 text-xs bg-white rounded-lg border"></textarea>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">8. Rencana aksi spesifik untuk pertemuan berikutnya:</label>
+                        <textarea id="ref_8" rows="2" class="w-full p-2 text-xs bg-white rounded-lg border"></textarea>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">9. Emosi/energi saat belajar dan penyebabnya:</label>
+                        <textarea id="ref_9" rows="2" class="w-full p-2 text-xs bg-white rounded-lg border"></textarea>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">10. Dukungan yang saya butuhkan:</label>
+                        <textarea id="ref_10" rows="2" class="w-full p-2 text-xs bg-white rounded-lg border"></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex gap-3">
+                    <button onclick="saveTask('REFLEKSI', 'Lembar Refleksi Pembelajaran')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow transition">💾 Simpan Refleksi</button>
+                    <button onclick="downloadCSV('REFLEKSI', 'Lembar Refleksi Pembelajaran')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow transition">⬇️ Download CSV Refleksi</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-center md:text-left">
+            <div>
+                <p class="font-bold text-white">SMKN 1 Jabon • Koding dan Kecerdasan Artifisial Kelas X</p>
+                <p class="mt-1">Media Pembelajaran Interaktif Bab 3: Literasi dan Etika Kecerdasan Artifisial</p>
+            </div>
+            <div class="text-slate-500">
+                Didesain khusus untuk pembelajaran mandiri siswa SMK yang interaktif & menyenangkan ✨
+            </div>
+        </div>
+    </footer>
+
+    <!-- CUSTOM NOTIFICATION MODAL -->
+    <div id="customModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300" id="modalBox">
+            <div class="text-3xl mb-3 text-center" id="modalIcon">✨</div>
+            <h3 class="font-bold text-slate-900 text-center text-lg" id="modalTitle">Pemberitahuan</h3>
+            <p class="text-xs text-slate-600 text-center mt-2 leading-relaxed" id="modalMsg">Pesan informasi...</p>
+            <button onclick="closeModal()" class="mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold transition shadow">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Total tasks list for progress calculation
+        const allTaskCodes = [
+            'LEKA-K10-01', 'LEKA-K10-02', 'LEKA-K10-03', 'LEKA-K10-04',
+            'LEKA-K10-05', 'LEKA-K10-06', 'LEKA-K10-07', 'LEKA-K10-08',
+            'LEKA-K10-09', 'LEKA-K10-10', 'LEKA-K10-11', 'LEKA-K10-12',
+            'LEKA-K10-13', 'LEKA-K10-14', 'PENGAYAAN', 'REFLEKSI'
+        ];
+
+        window.onload = function() {
+            loadIdentity();
+            loadAllSavedData();
+            updateProgress();
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
+                el.classList.add('text-slate-600', 'hover:bg-slate-100');
+            });
+
+            document.getElementById('content-' + tabId).classList.add('active');
+            const btn = document.getElementById('tab-' + tabId);
+            btn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
+            btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showModal(title, msg, icon = '✨') {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMsg').innerText = msg;
+            document.getElementById('modalIcon').innerText = icon;
+            const modal = document.getElementById('customModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // Identity Management
+        function syncIdentity() {
+            const name = document.getElementById('globalName').value;
+            const cls = document.getElementById('globalClass').value;
+            const absen = document.getElementById('globalAbsen').value;
+            localStorage.setItem('mpi_name', name);
+            localStorage.setItem('mpi_class', cls);
+            localStorage.setItem('mpi_absen', absen);
+        }
+
+        function saveGlobalIdentity() {
+            syncIdentity();
+            showModal('Identitas Disimpan!', 'Identitas berhasil disimpan dan akan otomatis terisi ke setiap file CSV unduhanmu.', '👤');
+        }
+
+        function loadIdentity() {
+            if(localStorage.getItem('mpi_name')) document.getElementById('globalName').value = localStorage.getItem('mpi_name');
+            if(localStorage.getItem('mpi_class')) document.getElementById('globalClass').value = localStorage.getItem('mpi_class');
+            if(localStorage.getItem('mpi_absen')) document.getElementById('globalAbsen').value = localStorage.getItem('mpi_absen');
+        }
+
+        function validateIdentity() {
+            const name = document.getElementById('globalName').value.trim();
+            const cls = document.getElementById('globalClass').value.trim();
+            const absen = document.getElementById('globalAbsen').value.trim();
+            if(!name || !cls || !absen) {
+                showModal('Data Belum Lengkap', 'Mohon isi Nama, Kelas, dan No. Absen di bagian atas sebelum mengunduh CSV!', '⚠️');
+                return false;
+            }
+            return true;
+        }
+
+        // Save individual task data
+        function getTaskAnswers(code) {
+            let data = {};
+            if(code === 'LEKA-K10-01') {
+                data.kategori_objek1 = document.getElementById('t1_cat1').value;
+                data.pola_objek1 = document.getElementById('t1_pat1').value;
+                data.kategori_objek2 = document.getElementById('t1_cat2').value;
+                data.pola_objek2 = document.getElementById('t1_pat2').value;
+                data.kategori_objek3 = document.getElementById('t1_cat3').value;
+                data.pola_objek3 = document.getElementById('t1_pat3').value;
+                data.kategori_objek4 = document.getElementById('t1_cat4').value;
+                data.pola_objek4 = document.getElementById('t1_pat4').value;
+            } else if(code === 'LEKA-K10-02') {
+                data.q1 = document.getElementById('t2_q1').value;
+                data.q2 = document.getElementById('t2_q2').value;
+                data.q3 = document.getElementById('t2_q3').value;
+                data.q4 = document.getElementById('t2_q4').value;
+            } else if(code === 'LEKA-K10-03') {
+                data.analisis_suara = document.getElementById('t3_ans').value;
+            } else if(code === 'LEKA-K10-04') {
+                data.q1 = document.getElementById('t4_q1').value;
+                data.q2 = document.getElementById('t4_q2').value;
+                data.q3 = document.getElementById('t4_q3').value;
+            } else if(code === 'LEKA-K10-05') {
+                data.bidang = document.getElementById('t5_field').value;
+                data.contoh = document.getElementById('t5_a').value;
+                data.manfaat = document.getElementById('t5_b').value;
+                data.tantangan = document.getElementById('t5_c').value;
+            } else if(code === 'LEKA-K10-06') {
+                data.penghuni = document.getElementById('t6_q1').value;
+                data.tanah = document.getElementById('t6_q2').value;
+                data.ruangan = document.getElementById('t6_q3').value;
+                data.anggaran = document.getElementById('t6_q4').value;
+                data.aturan = document.getElementById('t6_q5').value;
+            } else if(code === 'LEKA-K10-07') {
+                data.kasus = document.getElementById('t7_case').value;
+                data.profesi = document.getElementById('t7_prof').value;
+                data.alasan = document.getElementById('t7_reason').value;
+            } else if(code === 'LEKA-K10-08') {
+                data.profesi = document.getElementById('t8_prof').value;
+                data.tugas = document.getElementById('t8_desc').value;
+                data.keterampilan = document.getElementById('t8_skills').value;
+                data.alasan = document.getElementById('t8_why').value;
+            } else if(code === 'LEKA-K10-09') {
+                data.kegiatan1 = document.getElementById('t9_q1').value;
+                data.kegiatan2 = document.getElementById('t9_q2').value;
+            } else if(code === 'LEKA-K10-10') {
+                data.bidang = document.getElementById('t10_field').value;
+                data.jawaban = document.getElementById('t10_ans').value;
+            } else if(code === 'LEKA-K10-11') {
+                data. aplikasi = document.getElementById('t11_app').value;
+                data.keuntungan = document.getElementById('t11_benefit').value;
+                data.ketidaknyamanan = document.getElementById('t11_uncomfort').value;
+            } else if(code === 'LEKA-K10-12') {
+                data.pekerjaan = document.getElementById('t12_jobs').value;
+                data.pemerataan = document.getElementById('t12_fair').value;
+                data.tips_privasi = document.getElementById('t12_tips').value;
+            } else if(code === 'LEKA-K10-13') {
+                data.q1 = document.getElementById('t13_q1').value;
+                data.q2 = document.getElementById('t13_q2').value;
+                data.q3 = document.getElementById('t13_q3').value;
+                data.q4 = document.getElementById('t13_q4').value;
+            } else if(code === 'LEKA-K10-14') {
+                data.rule1 = document.getElementById('t14_rule1').value;
+                data.rule2 = document.getElementById('t14_rule2').value;
+                data.rule3 = document.getElementById('t14_rule3').value;
+                data.rule4 = document.getElementById('t14_rule4').value;
+                data.rule5 = document.getElementById('t14_rule5').value;
+            } else if(code === 'PENGAYAAN') {
+                data.q1 = document.getElementById('eng_q1').value;
+                data.q2 = document.getElementById('eng_q2').value;
+                data.q3 = document.getElementById('eng_q3').value;
+            } else if(code === 'REFLEKSI') {
+                for(let i=1; i<=10; i++) {
+                    data['komponen_'+i] = document.getElementById('ref_'+i).value;
+                }
+            }
+            return data;
+        }
+
+        function saveTask(code, title) {
+            syncIdentity();
+            const data = getTaskAnswers(code);
+            // Check if at least some data is filled
+            const values = Object.values(data);
+            const hasContent = values.some(v => v && v.trim() !== '');
+            if(!hasContent) {
+                showModal('Belum Ada Jawaban', 'Mohon isi setidaknya salah satu kolom jawaban sebelum menyimpan!', '⚠️');
+                return;
+            }
+            localStorage.setItem('task_' + code, JSON.stringify(data));
+            updateProgress();
+            showModal('Berhasil Disimpan!', `Jawaban untuk ${code} (${title}) berhasil disimpan di perangkatmu. Kerja bagus! 🎉`, '💾');
+        }
+
+        function loadAllSavedData() {
+            allTaskCodes.forEach(code => {
+                const saved = localStorage.getItem('task_' + code);
+                if(saved) {
+                    try {
+                        const data = JSON.parse(saved);
+                        if(code === 'LEKA-K10-01') {
+                            if(data.kategori_objek1) document.getElementById('t1_cat1').value = data.kategori_objek1;
+                            if(data.pola_objek1) document.getElementById('t1_pat1').value = data.pola_objek1;
+                            if(data.kategori_objek2) document.getElementById('t1_cat2').value = data.kategori_objek2;
+                            if(data.pola_objek2) document.getElementById('t1_pat2').value = data.pola_objek2;
+                            if(data.kategori_objek3) document.getElementById('t1_cat3').value = data.kategori_objek3;
+                            if(data.pola_objek3) document.getElementById('t1_pat3').value = data.pola_objek3;
+                            if(data.kategori_objek4) document.getElementById('t1_cat4').value = data.kategori_objek4;
+                            if(data.pola_objek4) document.getElementById('t1_pat4').value = data.pola_objek4;
+                        } else if(code === 'LEKA-K10-02') {
+                            if(data.q1) document.getElementById('t2_q1').value = data.q1;
+                            if(data.q2) document.getElementById('t2_q2').value = data.q2;
+                            if(data.q3) document.getElementById('t2_q3').value = data.q3;
+                            if(data.q4) document.getElementById('t2_q4').value = data.q4;
+                        } else if(code === 'LEKA-K10-03') {
+                            if(data.analisis_suara) document.getElementById('t3_ans').value = data.analisis_suara;
+                        } else if(code === 'LEKA-K10-04') {
+                            if(data.q1) document.getElementById('t4_q1').value = data.q1;
+                            if(data.q2) document.getElementById('t4_q2').value = data.q2;
+                            if(data.q3) document.getElementById('t4_q3').value = data.q3;
+                        } else if(code === 'LEKA-K10-05') {
+                            if(data.bidang) document.getElementById('t5_field').value = data.bidang;
+                            if(data.contoh) document.getElementById('t5_a').value = data.contoh;
+                            if(data.manfaat) document.getElementById('t5_b').value = data.manfaat;
+                            if(data.tantangan) document.getElementById('t5_c').value = data.tantangan;
+                        } else if(code === 'LEKA-K10-06') {
+                            if(data.penghuni) document.getElementById('t6_q1').value = data.penghuni;
+                            if(data.tanah) document.getElementById('t6_q2').value = data.tanah;
+                            if(data.ruangan) document.getElementById('t6_q3').value = data.ruangan;
+                            if(data.anggaran) document.getElementById('t6_q4').value = data.anggaran;
+                            if(data.aturan) document.getElementById('t6_q5').value = data.aturan;
+                        } else if(code === 'LEKA-K10-07') {
+                            if(data.kasus) document.getElementById('t7_case').value = data.kasus;
+                            if(data.profesi) document.getElementById('t7_prof').value = data.profesi;
+                            if(data.alasan) document.getElementById('t7_reason').value = data.alasan;
+                        } else if(code === 'LEKA-K10-08') {
+                            if(data.profesi) document.getElementById('t8_prof').value = data.profesi;
+                            if(data.tugas) document.getElementById('t8_desc').value = data.tugas;
+                            if(data.keterampilan) document.getElementById('t8_skills').value = data.keterampilan;
+                            if(data.alasan) document.getElementById('t8_why').value = data.alasan;
+                        } else if(code === 'LEKA-K10-09') {
+                            if(data.kegiatan1) document.getElementById('t9_q1').value = data.kegiatan1;
+                            if(data.kegiatan2) document.getElementById('t9_q2').value = data.kegiatan2;
+                        } else if(code === 'LEKA-K10-10') {
+                            if(data.bidang) document.getElementById('t10_field').value = data.bidang;
+                            if(data.jawaban) document.getElementById('t10_ans').value = data.jawaban;
+                        } else if(code === 'LEKA-K10-11') {
+                            if(data.aplikasi) document.getElementById('t11_app').value = data.aplikasi;
+                            if(data.keuntungan) document.getElementById('t11_benefit').value = data.keuntungan;
+                            if(data.ketidaknyamanan) document.getElementById('t11_uncomfort').value = data.ketidaknyamanan;
+                        } else if(code === 'LEKA-K10-12') {
+                            if(data.pekerjaan) document.getElementById('t12_jobs').value = data.pekerjaan;
+                            if(data.pemerataan) document.getElementById('t12_fair').value = data.pemerataan;
+                            if(data.tips_privasi) document.getElementById('t12_tips').value = data.tips_privasi;
+                        } else if(code === 'LEKA-K10-13') {
+                            if(data.q1) document.getElementById('t13_q1').value = data.q1;
+                            if(data.q2) document.getElementById('t13_q2').value = data.q2;
+                            if(data.q3) document.getElementById('t13_q3').value = data.q3;
+                            if(data.q4) document.getElementById('t13_q4').value = data.q4;
+                        } else if(code === 'LEKA-K10-14') {
+                            if(data.rule1) document.getElementById('t14_rule1').value = data.rule1;
+                            if(data.rule2) document.getElementById('t14_rule2').value = data.rule2;
+                            if(data.rule3) document.getElementById('t14_rule3').value = data.rule3;
+                            if(data.rule4) document.getElementById('t14_rule4').value = data.rule4;
+                            if(data.rule5) document.getElementById('t14_rule5').value = data.rule5;
+                        } else if(code === 'PENGAYAAN') {
+                            if(data.q1) document.getElementById('eng_q1').value = data.q1;
+                            if(data.q2) document.getElementById('eng_q2').value = data.q2;
+                            if(data.q3) document.getElementById('eng_q3').value = data.q3;
+                        } else if(code === 'REFLEKSI') {
+                            for(let i=1; i<=10; i++) {
+                                if(data['komponen_'+i]) document.getElementById('ref_'+i).value = data['komponen_'+i];
+                            }
+                        }
+                    } catch(e) {}
+                }
+            });
+        }
+
+        function updateProgress() {
+            let completed = 0;
+            allTaskCodes.forEach(code => {
+                if(localStorage.getItem('task_' + code)) completed++;
+            });
+            const pct = Math.round((completed / allTaskCodes.length) * 100);
+            document.getElementById('progressText').innerText = `📊 Progres Tugas Selesai: ${completed} / ${allTaskCodes.length} (${pct}%)`;
+            document.getElementById('progressBar').style.width = pct + '%';
+        }
+
+        // CSV Export Functionality with UTF-8 BOM
+        function downloadCSV(code, title) {
+            if(!validateIdentity()) return;
+            const name = document.getElementById('globalName').value.trim();
+            const cls = document.getElementById('globalClass').value.trim();
+            const absen = document.getElementById('globalAbsen').value.trim();
+            
+            const data = getTaskAnswers(code);
+            const now = new Date().toISOString();
+
+            let csvRows = [];
+            csvRows.push(['Sekolah', 'Nama', 'Kelas', 'No Absen', 'Kode Tugas', 'Judul Tugas', 'Pertanyaan/Key', 'Jawaban', 'Tanggal Waktu']);
+
+            for(let [key, val] of Object.entries(data)) {
+                let cleanVal = (val || '').replace(/"/g, '""').replace(/\n/g, ' ');
+                csvRows.push(['SMKN 1 Jabon', name, cls, absen, code, title, key, `"${cleanVal}"`, now]);
+            }
+
+            let csvContent = "\uFEFF" + csvRows.map(e => e.join(",")).join("\n");
+            let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            let url = URL.createObjectURL(blob);
+            let link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `${code}_${name.replace(/\s+/g, '_')}_SMKN1Jabon.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showModal('Berhasil Download!', `File CSV tugas ${code} berhasil diunduh ke perangkatmu! 📥`, '✅');
+        }
+
+        function downloadAllCSV() {
+            if(!validateIdentity()) return;
+            const name = document.getElementById('globalName').value.trim();
+            const cls = document.getElementById('globalClass').value.trim();
+            const absen = document.getElementById('globalAbsen').value.trim();
+            const now = new Date().toISOString();
+
+            let csvRows = [];
+            csvRows.push(['Sekolah', 'Nama', 'Kelas', 'No Absen', 'Kode Tugas', 'Judul Tugas', 'Pertanyaan/Key', 'Jawaban', 'Tanggal Waktu']);
+
+            allTaskCodes.forEach(code => {
+                const saved = localStorage.getItem('task_' + code);
+                if(saved) {
+                    try {
+                        const data = JSON.parse(saved);
+                        for(let [key, val] of Object.entries(data)) {
+                            let cleanVal = (val || '').replace(/"/g, '""').replace(/\n/g, ' ');
+                            csvRows.push(['SMKN 1 Jabon', name, cls, absen, code, 'Gabungan Tugas', key, `"${cleanVal}"`, now]);
+                        }
+                    } catch(e) {}
+                }
+            });
+
+            if(csvRows.length <= 1) {
+                showModal('Belum Ada Tugas Tersimpan', 'Belum ada tugas yang kamu simpan. Simpan setidaknya satu tugas sebelum mendownload CSV gabungan!', '⚠️');
+                return;
+            }
+
+            let csvContent = "\uFEFF" + csvRows.map(e => e.join(",")).join("\n");
+            let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            let url = URL.createObjectURL(blob);
+            let link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `SEMUA_TUGAS_${name.replace(/\s+/g, '_')}_SMKN1Jabon.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showModal('Berhasil Download Semua!', 'Semua tugas yang telah kamu kerjakan berhasil digabung ke dalam 1 file CSV! 🚀', '🎉');
+        }
+
+        // Formative Awal Submission
+        function submitFormativeAwal() {
+            const essay = document.getElementById('fq_essay1').value;
+            localStorage.setItem('task_FORMATIF_AWAL', JSON.stringify({ essay }));
+            showModal('Formatif Awal Tersimpan!', 'Jawaban kuis awalmu berhasil disimpan. Silakan lanjut ke materi pembelajaran!', '🌟');
+        }
+
+        // Speech Recognition Demo using Web Speech API
+        function startSpeechDemo() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                showModal('Browser Tidak Mendukung', 'Maaf, browser kamu tidak mendukung Web Speech API. Coba gunakan Google Chrome.', '❌');
+                return;
+            }
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'id-ID';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            const btn = document.getElementById('micBtn');
+            const resDiv = document.getElementById('speechResult');
+            
+            btn.innerText = "🎙️ Mendengarkan... Silakan Bicara";
+            btn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            btn.classList.add('bg-amber-500', 'animate-pulse');
+
+            recognition.onresult = function(event) {
+                const speechToText = event.results[0][0].transcript;
+                resDiv.innerText = `"${speechToText}"`;
+                document.getElementById('t3_ans').value = `Hasil uji suara: "${speechToText}". Sistem mengenali ucapan dengan baik karena mencocokkan frekuensi gelombang suara dengan model akustik.`;
+                btn.innerText = "🎙️ Mulai Rekam Suara (MIC ON)";
+                btn.classList.remove('bg-amber-500', 'animate-pulse');
+                btn.classList.add('bg-red-500', 'hover:bg-red-600');
+            };
+
+            recognition.onerror = function(event) {
+                resDiv.innerText = "Error pengenalan suara atau mikrofon tidak diizinkan.";
+                btn.innerText = "🎙️ Mulai Rekam Suara (MIC ON)";
+                btn.classList.remove('bg-amber-500', 'animate-pulse');
+                btn.classList.add('bg-red-500', 'hover:bg-red-600');
+            };
+
+            recognition.start();
+        }
+
+        // Quiz Handling & Scoring
+        let lastQuizScore = 0;
+        let quizDetails = [];
+
+        function submitQuiz() {
+            let score = 0;
+            quizDetails = [];
+            const cards = document.querySelectorAll('.quiz-card');
+            
+            cards.forEach(card => {
+                const qid = card.getAttribute('data-qid');
+                const key = card.getAttribute('data-key');
+                const radios = card.querySelectorAll(`input[name="q${qid}"]`);
+                let selected = '';
+                radios.forEach(r => { if(r.checked) selected = r.value; });
+
+                const feedback = card.querySelector('.quiz-feedback');
+                feedback.classList.remove('hidden');
+
+                if(selected === key) {
+                    score += 10;
+                    feedback.className = "quiz-feedback mt-3 p-3 rounded-lg text-xs font-medium bg-emerald-100 text-emerald-800";
+                    feedback.innerText = `✅ Benar! Kunci jawaban adalah (${key}).`;
+                } else {
+                    feedback.className = "quiz-feedback mt-3 p-3 rounded-lg text-xs font-medium bg-rose-100 text-rose-800";
+                    feedback.innerText = `❌ Kurang tepat. Jawabanmu: (${selected || '-'}), Kunci jawaban: (${key}).`;
+                }
+                quizDetails.push({ soal: qid, jawaban_siswa: selected || '-', kunci: key, status: selected === key ? 'Benar' : 'Salah' });
+            });
+
+            lastQuizScore = score;
+            localStorage.setItem('quiz_score', score);
+            localStorage.setItem('quiz_details', JSON.stringify(quizDetails));
+
+            showModal('Hasil Uji Kompetensi', `Skor akhir kamu adalah ${score} / 100. Periksa rincian di bawah setiap soal! 🎯`, '🏆');
+        }
+
+        function downloadQuizCSV() {
+            if(!validateIdentity()) return;
+            if(quizDetails.length === 0) {
+                showModal('Belum Mengerjakan Kuis', 'Mohon klik "Periksa Hasil Uji Kompetensi" terlebih dahulu sebelum mendownload CSV nilai!', '⚠️');
+                return;
+            }
+            const name = document.getElementById('globalName').value.trim();
+            const cls = document.getElementById('globalClass').value.trim();
+            const absen = document.getElementById('globalAbsen').value.trim();
+            const now = new Date().toISOString();
+
+            let csvRows = [];
+            csvRows.push(['Sekolah', 'Nama', 'Kelas', 'No Absen', 'Nomor Soal', 'Jawaban Siswa', 'Kunci Jawaban', 'Status', 'Skor Akhir', 'Tanggal Waktu']);
+
+            quizDetails.forEach(d => {
+                csvRows.push(['SMKN 1 Jabon', name, cls, absen, `Soal ${d.soal}`, d.jawaban_siswa, d.kunci, d.status, lastQuizScore, now]);
+            });
+
+            let csvContent = "\uFEFF" + csvRows.map(e => e.join(",")).join("\n");
+            let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            let url = URL.createObjectURL(blob);
+            let link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `UJI_KOMPETENSI_${name.replace(/\s+/g, '_')}_SMKN1Jabon.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showModal('CSV Nilai Berhasil Diunduh!', 'File CSV Uji Kompetensi berhasil diunduh! 📥', '✅');
+        }
+    </script>
+</body>
+</html>
